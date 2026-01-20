@@ -11,8 +11,21 @@ export default {
         serif: ['"Playfair Display"', 'serif'],
       },
       colors: {
-        accent: '#FF4F00',
+        // Дорогой светлый фон (Bone)
+        bg: '#F2F2F0',         
+        // Мягкий черный (Obsidian) вместо #000
+        black: '#080808',      
+        surface: '#111111',
+        // НОВЫЙ АКЦЕНТ: International Orange (более красный и плотный)
+        // Был: #FF4F00 (вырвиглаз) -> Стало: #EB440F (инженерный)
+        accent: '#EB440F',     
       },
+      borderRadius: {
+        '4xl': '2.5rem',
+      },
+      fontSize: {
+        'display': 'clamp(3.5rem, 8vw, 7.5rem)',
+      }
     },
   },
   plugins: [],

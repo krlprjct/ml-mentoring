@@ -3,6 +3,9 @@ import Lenis from 'lenis';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Roadmap from './components/Roadmap';
+import TerminalBlock from './components/TerminalBlock';
+import Expectations from './components/Expectations';
+import Testimonials from './components/Testimonials'; // <--- НОВОЕ
 import { Manifesto, Results, Pricing, FAQ, Footer } from './components/ContentSections';
 
 export default function App() {
@@ -12,7 +15,7 @@ export default function App() {
       easing: (t) => 1 - Math.pow(1 - t, 3), 
       smooth: true,
       mouseMultiplier: 1,
-      smoothTouch: false, // Выключаем на мобиле для скорости
+      smoothTouch: false,
       touchMultiplier: 2,
     });
 
@@ -25,13 +28,15 @@ export default function App() {
   }, []);
 
   return (
-    // overflow-x-hidden ГЛОБАЛЬНО, чтобы скролл не дергался
     <main className="font-sans text-[#1A1A1A] bg-[#F3F3F1] selection:bg-[#FF4F00] selection:text-white">
       <Navbar />
       <Hero />
       <Manifesto />
       <Results />
+      <Expectations />
       <Roadmap />
+      <TerminalBlock />
+      <Testimonials />
       <FAQ />
       <Pricing />
       <Footer />

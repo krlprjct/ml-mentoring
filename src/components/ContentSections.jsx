@@ -177,7 +177,7 @@ const FaqItem = ({ question, answer }) => {
 };
 
 export const FAQ = memo(() => (
-  <section className="py-32 pb-48 px-4 bg-[#F3F3F1]">
+  <section className="py-32 pb-64 px-4 bg-[#F3F3F1]">
     <div className="max-w-[1000px] mx-auto">
        <span className="text-xs font-bold uppercase tracking-widest opacity-40 mb-8 block">Q&A</span>
        <h2 className="text-5xl font-bold mb-16">Частые вопросы</h2>

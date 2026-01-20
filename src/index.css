@@ -36,3 +36,8 @@ body {
     background-color: rgba(255, 255, 255, 0.95) !important;
   }
 }
+
+.bg-noise {
+  background-image: url('https://grainy-gradients.vercel.app/noise.svg');
+  filter: contrast(150%) brightness(100%);
+}

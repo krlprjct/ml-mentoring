@@ -1,15 +1,27 @@
-import React, { useRef, memo } from 'react';
+import React, { useRef, memo, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 
 const Roadmap = memo(() => {
   const targetRef = useRef(null);
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const checkDesktop = () => setIsDesktop(window.innerWidth >= 768);
+    checkDesktop();
+    window.addEventListener('resize', checkDesktop);
+    return () => window.removeEventListener('resize', checkDesktop);
+  }, []);
+  
   const { scrollYProgress } = useScroll({
     target: targetRef,
     offset: ["start start", "end end"]
   });
 
-  const x = useTransform(scrollYProgress, [0, 1], ["0%", "-90%"]); // Чуть увеличил скролл из-за 7 шагов
+  // -90% идеально для 7 шагов
+  const x = useTransform(scrollYProgress, [0, 1], ["0%", "-90%"]);
+  // Прогресс бар (0 -> 100%)
+  const progress = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   const steps = [
     { 
@@ -57,15 +69,37 @@ const Roadmap = memo(() => {
   ];
 
   return (
-    <section ref={targetRef} id="roadmap" className="relative h-[250vh] bg-[#050505] transform-gpu">
-      <div className="sticky top-0 flex h-screen items-center overflow-hidden">
+    <section 
+        ref={targetRef} 
+        id="roadmap" 
+        // На десктопе 300vh (для скролла), на мобилке auto
+        className="relative h-auto md:h-[300vh] bg-[#050505] transform-gpu"
+    >
+      
+      <div className="static md:sticky md:top-0 flex h-auto md:h-screen items-center overflow-hidden py-20 md:py-0">
+        
         <div className="absolute inset-0 bg-[#050505] pointer-events-none">
            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,_rgba(255,79,0,0.06),transparent_80%)]"></div>
            <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] mix-blend-overlay"></div>
         </div>
 
-        <motion.div style={{ x }} className="flex gap-10 pl-8 md:pl-20 items-center will-change-transform transform-gpu">
-          <div className="min-w-[85vw] md:min-w-[35vw] pr-8 shrink-0">
+        {/* МОБИЛЬНЫЙ ЗАГОЛОВОК */}
+        <div className="md:hidden px-6 mb-8 w-full z-10">
+           <div className="inline-flex items-center gap-2 mb-4">
+              <span className="w-8 h-[2px] bg-[#FF4F00]"></span>
+              <span className="text-[#FF4F00] font-bold text-xs uppercase tracking-[0.2em]">Программа</span>
+           </div>
+           <h2 className="text-4xl font-bold text-white leading-[0.9]">Путь <br/> Инженера.</h2>
+        </div>
+
+        {/* ЛЕНТА */}
+        <motion.div 
+            style={{ x: isDesktop ? x : 0 }} 
+            className="flex md:gap-10 gap-4 px-6 md:pl-20 items-center w-full md:w-auto overflow-x-auto md:overflow-visible snap-x snap-mandatory scrollbar-hide z-10"
+        >
+          
+          {/* ДЕСКТОПНЫЙ ЗАГОЛОВОК */}
+          <div className="hidden md:block min-w-[85vw] md:min-w-[35vw] pr-8 shrink-0">
              <div className="inline-flex items-center gap-2 mb-6">
                 <span className="w-8 h-[2px] bg-[#FF4F00]"></span>
                 <span className="text-[#FF4F00] font-bold text-xs uppercase tracking-[0.2em]">Программа</span>
@@ -81,8 +115,12 @@ const Roadmap = memo(() => {
              </div>
           </div>
 
+          {/* КАРТОЧКИ */}
           {steps.map((step, i) => (
-            <div key={i} className="relative min-w-[85vw] md:min-w-[35vw] h-[60vh] flex flex-col justify-between p-10 rounded-[3rem] bg-[#111] border border-white/10 hover:border-[#FF4F00]/50 transition-colors duration-500 group shrink-0 overflow-hidden">
+            <div 
+                key={i} 
+                className="relative min-w-[85vw] md:min-w-[35vw] h-[55vh] md:h-[60vh] flex flex-col justify-between p-10 rounded-[3rem] bg-[#111] border border-white/10 hover:border-[#FF4F00]/50 transition-colors duration-500 group shrink-0 snap-center overflow-hidden"
+            >
                <span className="absolute -right-4 -bottom-10 text-[14rem] font-bold text-white/5 font-sans leading-none select-none group-hover:text-white/10 transition-colors duration-500">{step.id}</span>
                <div className="relative z-10">
                  <div className="flex flex-wrap gap-2 mb-8">
@@ -99,8 +137,17 @@ const Roadmap = memo(() => {
             </div>
           ))}
           
-          <div className="min-w-[10vw]"></div>
+          <div className="min-w-[10vw] hidden md:block"></div>
         </motion.div>
+
+        {/* ПРОГРЕСС БАР (Только десктоп) */}
+        <div className="hidden md:block absolute bottom-10 left-20 right-20 h-[2px] bg-white/10 overflow-hidden rounded-full">
+           <motion.div 
+             style={{ width: progress }} 
+             className="h-full bg-[#FF4F00] shadow-[0_0_10px_#FF4F00]"
+           ></motion.div>
+        </div>
+
       </div>
     </section>
   );
