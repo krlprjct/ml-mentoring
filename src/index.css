@@ -1,43 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 html {
-  /* ВАЖНО: Отключаем нативную плавность. Lenis сделает это сам. */
   scroll-behavior: auto !important;
-  height: 100%;
 }
 
 body {
-  background-color: #F3F3F1;
-  color: #1A1A1A;
-  /* Включаем сглаживание шрифтов */
+  /* Холодный фон */
+  background-color: #F5F5F7; 
+  color: #050505;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-  width: 100%;
-  min-height: 100%;
   overflow-x: hidden;
 }
 
-/* КЛАСС ДЛЯ GPU-УСКОРЕНИЯ */
-/* Добавляй этот класс ко всему, что движется */
-.gpu-accelerated {
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  perspective: 1000px;
-  will-change: transform, opacity;
+/* Убираем скроллбар для горизонтальных секций */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-/* Убираем тяжелые блюры на слабых устройствах (опционально) */
-@media (max-width: 768px) {
-  .backdrop-blur-xl, .backdrop-blur-md {
-    backdrop-filter: none !important;
-    background-color: rgba(255, 255, 255, 0.95) !important;
-  }
+.will-change-transform {
+  will-change: transform;
 }
 
-.bg-noise {
-  background-image: url('https://grainy-gradients.vercel.app/noise.svg');
-  filter: contrast(150%) brightness(100%);
+.transform-gpu {
+  transform: translate3d(0, 0, 0);
 }

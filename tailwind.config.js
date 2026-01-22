@@ -11,14 +11,13 @@ export default {
         serif: ['"Playfair Display"', 'serif'],
       },
       colors: {
-        // Дорогой светлый фон (Bone)
-        bg: '#F2F2F0',         
-        // Мягкий черный (Obsidian) вместо #000
-        black: '#080808',      
-        surface: '#111111',
-        // НОВЫЙ АКЦЕНТ: International Orange (более красный и плотный)
-        // Был: #FF4F00 (вырвиглаз) -> Стало: #EB440F (инженерный)
-        accent: '#EB440F',     
+        // Убрали розовый оттенок. Теперь это чистый, холодный серый.
+        bg: '#F5F5F7',         
+        // Глубокий черный
+        black: '#050505',      
+        surface: '#FFFFFF',
+        // Вернули электрический оранжевый (как у Linear/Yapay)
+        accent: '#FF4F00',     
       },
       borderRadius: {
         '4xl': '2.5rem',

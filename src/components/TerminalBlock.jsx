@@ -1,94 +1,120 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Play, Check } from 'lucide-react';
-import WindowHeader from './ui/WindowHeader'; // Импортируем умную шапку
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
 
 const TerminalBlock = () => {
-  const [step, setStep] = useState(0);
-  const [start, setStart] = useState(false);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.3 });
+  const [lines, setLines] = useState([]);
 
+  // Сценарий выполнения
   useEffect(() => {
-    if (start) {
-      const timer = setInterval(() => {
-        setStep((prev) => (prev < 4 ? prev + 1 : prev));
-      }, 1200);
-      return () => clearInterval(timer);
+    if (isInView) {
+      const script = [
+        { text: "whoami", cmd: true, delay: 500 },
+        { text: "vadim_timakin", cmd: false, color: "text-green-400", delay: 800 },
+        { text: "python3 optimize_career.py --target=BigTech", cmd: true, delay: 1500 },
+        { text: "[INFO] Analyzing background...", cmd: false, color: "text-gray-400", delay: 2800 },
+        { text: "[INFO] Removing academic fluff...", cmd: false, color: "text-gray-400", delay: 3600 },
+        { text: "[INFO] Building System Design skills...", cmd: false, color: "text-blue-400", delay: 4400 },
+        { text: "SUCCESS: Offer Received", cmd: false, color: "text-green-500 font-bold", delay: 5400 },
+        { text: "Total Comp: 405,000 RUB/mo + Equity", cmd: false, color: "text-[#FF4F00] font-bold", delay: 6000 },
+      ];
+
+      let timeouts = [];
+      let accumulatedDelay = 0;
+
+      script.forEach((line, index) => {
+        accumulatedDelay += line.delay || 500; // Базовая задержка или кастомная
+        
+        const timeout = setTimeout(() => {
+          setLines((prev) => [...prev, line]);
+        }, accumulatedDelay);
+        
+        timeouts.push(timeout);
+      });
+
+      return () => timeouts.forEach(clearTimeout);
     }
-  }, [start]);
+  }, [isInView]);
 
   return (
-    <section className="py-24 px-4 bg-[#F3F3F1] flex justify-center -mt-10 rounded-t-[3rem] relative z-30">
+    <section ref={ref} className="py-32 px-4 bg-[#F5F5F7] flex justify-center -mt-10 relative z-30">
       <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
-        onViewportEnter={() => setStart(true)}
-        className="w-full max-w-4xl bg-[#1E1E1E] rounded-xl shadow-2xl overflow-hidden font-mono text-sm md:text-base border border-black/10 transform transition-all hover:scale-[1.01] duration-500"
+        initial={{ opacity: 0, y: 40 }}
+        animate={isInView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.8 }}
+        className="w-full max-w-3xl rounded-xl overflow-hidden shadow-2xl font-mono text-sm md:text-base bg-[#1e1e1e]"
+        style={{ fontFamily: "Menlo, Monaco, 'Courier New', monospace" }}
       >
         
-        {/* УМНАЯ ШАПКА (Win/Mac) */}
-        <WindowHeader title="career_optimization.ipynb" />
-
-        {/* Тело терминала */}
-        <div className="p-6 md:p-8 text-white/80 space-y-6">
-          
-          <div className="flex gap-4 opacity-100">
-             <div className="text-[#27C93F] mt-1 shrink-0"><Play size={14} fill="currentColor" /></div>
-             <div className="w-full">
-                <div className="bg-[#2D2D2D]/50 p-4 rounded-lg border border-white/5 mb-2 relative group">
-                   <span className="text-[#C678DD]">import</span> career <span className="text-[#C678DD]">as</span> success<br/>
-                   <span className="text-[#C678DD]">from</span> vadim_mentorship <span className="text-[#C678DD]">import</span> Roadmap, BigTech_Offer
-                </div>
-             </div>
+        {/* MACOS HEADER */}
+        <div className="bg-[#2D2D2D] px-4 py-3 flex items-center border-b border-black/30 relative">
+          {/* Светофор */}
+          <div className="flex gap-2 z-10">
+            <div className="w-3 h-3 rounded-full bg-[#FF5F56] border border-[#E0443E]"></div>
+            <div className="w-3 h-3 rounded-full bg-[#FFBD2E] border border-[#D89E24]"></div>
+            <div className="w-3 h-3 rounded-full bg-[#27C93F] border border-[#1AAB29]"></div>
           </div>
-
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={step >= 1 ? { opacity: 1 } : {}}
-            className="flex gap-4"
-          >
-             <div className="text-[#27C93F] mt-1 shrink-0"><Play size={14} fill="currentColor" /></div>
-             <div className="w-full">
-                <div className="bg-[#2D2D2D]/50 p-4 rounded-lg border border-white/5 mb-2">
-                   <span className="text-[#7f848e]"># Start optimization</span><br/>
-                   student = <span className="text-[#61AFEF]">Roadmap</span>(level=<span className="text-[#98C379]">'Zero_to_Hero'</span>)<br/>
-                   offer = student.<span className="text-[#61AFEF]">get_offer</span>()
-                </div>
-                
-                <div className="mt-4 font-mono text-xs md:text-sm pl-2 border-l-2 border-white/10 space-y-2">
-                   {step >= 2 && <div className="text-white/60">[INFO] Removing academic fluff... Done.</div>}
-                   {step >= 3 && <div className="text-white/60">[INFO] Mock interviews passed: 100%</div>}
-                   
-                   {step >= 4 && (
-                     <motion.div 
-                       initial={{ scale: 0.9, opacity: 0 }}
-                       animate={{ scale: 1, opacity: 1 }}
-                       transition={{ type: "spring" }}
-                       className="mt-6 p-4 rounded bg-[#1A1A1A] border border-[#27C93F]/50 text-white flex items-center justify-between"
-                     >
-                        <div className="flex items-center gap-3">
-                            <div className="w-6 h-6 rounded-full bg-[#27C93F] flex items-center justify-center text-black">
-                                <Check size={14} strokeWidth={4} />
-                            </div>
-                            <div>
-                                <div className="font-bold text-[#27C93F] text-xs uppercase tracking-wider">Success</div>
-                                <div className="text-sm">Offer Accepted</div>
-                            </div>
-                        </div>
-                        <div className="text-right">
-                            <div className="text-[10px] text-white/40 uppercase tracking-widest">Total Comp</div>
-                            <div className="font-bold text-lg">405,000 RUB</div>
-                        </div>
-                     </motion.div>
-                   )}
-                </div>
-             </div>
-          </motion.div>
-
+          {/* Заголовок */}
+          <div className="absolute inset-0 flex items-center justify-center text-[#999] text-xs font-medium">
+            vadim — -zsh — 80x24
+          </div>
         </div>
+
+        {/* TERMINAL BODY */}
+        <div className="p-6 text-gray-200 min-h-[350px]">
+          {lines.map((line, i) => (
+            <div key={i} className="mb-2">
+              {line.cmd ? (
+                <div className="flex gap-2">
+                  <span className="text-green-500 font-bold">➜</span>
+                  <span className="text-blue-400 font-bold">~</span>
+                  <Typewriter text={line.text} />
+                </div>
+              ) : (
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className={line.color || "text-gray-200"}
+                >
+                  {line.text}
+                </motion.div>
+              )}
+            </div>
+          ))}
+          
+          {/* Active Cursor Line */}
+          <div className="flex gap-2">
+             <span className="text-green-500 font-bold">➜</span>
+             <span className="text-blue-400 font-bold">~</span>
+             <motion.span 
+               animate={{ opacity: [0, 1, 0] }} 
+               transition={{ repeat: Infinity, duration: 0.8 }}
+               className="w-2.5 h-5 bg-gray-400 block"
+             />
+          </div>
+        </div>
+
       </motion.div>
     </section>
   );
+};
+
+// Компонент для эффекта печатания
+const Typewriter = ({ text }) => {
+  const [displayedText, setDisplayedText] = useState("");
+
+  useEffect(() => {
+    let i = 0;
+    const interval = setInterval(() => {
+      setDisplayedText(text.slice(0, i + 1));
+      i++;
+      if (i > text.length) clearInterval(interval);
+    }, 50); // Скорость печати
+    return () => clearInterval(interval);
+  }, [text]);
+
+  return <span>{displayedText}</span>;
 };
 
 export default TerminalBlock;
